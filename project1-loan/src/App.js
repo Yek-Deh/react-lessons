@@ -1,11 +1,16 @@
 import './App.css';
 import LoanForm from './LoanForm';
+import { UserContext } from "./contexts/UserContext";
 
 function App() {
   return (
-    <div className="App" style={{ marginTop: "250px" }}>
-      <LoanForm />
-    </div>
+     <UserContext.Provider
+      value={{ userName: "Ali", email: "Ali@gmail.com", name: "Ali" }}
+    >
+      <div className="App" style={{ marginTop: "250px" ,backgroundColor:"#222"}}>
+        <LoanForm />
+      </div>
+    </UserContext.Provider>
   );
 }
 
