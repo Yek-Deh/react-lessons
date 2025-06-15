@@ -1,6 +1,7 @@
 import "./FormStyles.css";
 import Modal from "./Modal";
 import { useState } from "react";
+import MyComponent from "./MyComponent";
 
 export default function LoanForm() {
   const [errorMessage, setErrorMessage] = useState(null);
@@ -36,6 +37,9 @@ export default function LoanForm() {
       setShowModal(false);
     }
   }
+    function handlePhoneNumberInputChange(value) {
+    setLoanInputs({ ...loanInputs, phoneNumber: value });
+  }
   return (
     <div
       onClick={handleDivClick}
@@ -54,12 +58,10 @@ export default function LoanForm() {
           }}
         />
 
-        <label>Phone Number:</label>
-        <input
+         <MyComponent
+          inputName="phone number"
+          handleChange={handlePhoneNumberInputChange}
           value={loanInputs.phoneNumber}
-          onChange={(event) => {
-            setLoanInputs({ ...loanInputs, phoneNumber: event.target.value });
-          }}
         />
 
         <label>Age:</label>
