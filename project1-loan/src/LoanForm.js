@@ -2,6 +2,8 @@ import "./FormStyles.css";
 import Modal from "./Modal";
 import { useState } from "react";
 import MyComponent from "./MyComponent";
+import { LoanInputContext } from "./contexts/LoanFormInputContext";
+
 
 export default function LoanForm() {
   const [errorMessage, setErrorMessage] = useState(null);
@@ -58,11 +60,15 @@ export default function LoanForm() {
           }}
         />
 
-         <MyComponent
-          inputName="phone number"
-          handleChange={handlePhoneNumberInputChange}
-          value={loanInputs.phoneNumber}
-        />
+         <LoanInputContext.Provider
+          value={{
+            value: loanInputs.phoneNumber,
+            handleChange: handlePhoneNumberInputChange,
+            labelTitle: "Phone Number",
+          }}
+        >
+          <MyComponent />
+        </LoanInputContext.Provider>
 
         <label>Age:</label>
         <input
