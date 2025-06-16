@@ -11,12 +11,20 @@ export default function PostDetails() {
   });
 
   console.log(post);
-  return (
-    <>
-      <h2> Post Details Page</h2>
-      <h1>{post.title}</h1>
+ if (post) {
+    return (
+      <>
+        <h2> Post Details Page</h2>
+        <h1>{post.title}</h1>
 
-      <p>{post.body}</p>
-    </>
-  );
+        <p>{post.body}</p>
+      </>
+    );
+  } else {
+    return (
+      <>
+        <h1>The post with id: {postId} is not exist</h1>
+      </>
+    );
+  }
 }
