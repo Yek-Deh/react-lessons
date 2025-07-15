@@ -10,9 +10,11 @@ import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined
 
 import { useContext } from "react";
 import { TodosContext } from "../contexts/todosContext";
+import {useToast} from "../contexts/ToastContext";
 
 export default function Todo({ todo, showDelete, showUpdate }) {
   const { todos, setTodos } = useContext(TodosContext);
+  const {showHideToast} = useToast();
   // EVENT HANDLERS
   function handleCheckClick() {
     const updatedTodos = todos.map((t) => {
@@ -23,6 +25,7 @@ export default function Todo({ todo, showDelete, showUpdate }) {
     });
     setTodos(updatedTodos);
     localStorage.setItem("todos", JSON.stringify(updatedTodos));
+    showHideToast("edit successfully");
   }
 
   function handleDeleteClick() {

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable eqeqeq */
 import * as React from "react";
 import Card from "@mui/material/Card";
@@ -12,6 +13,7 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import { useState, useContext, useEffect } from "react";
 import { TodosContext } from "../contexts/todosContext";
+import { useToast } from "../contexts/ToastContext";
 import { v4 as uuidv4 } from "uuid"; //this to generate id auto
 
 //Components
@@ -25,6 +27,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 
 export default function TodoList() {
   const { todos, setTodos } = useContext(TodosContext);
+  const {showHideToast} = useToast();
 
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showUpdateDialog, setShowUpdateDialog] = useState(false);
@@ -74,6 +77,8 @@ export default function TodoList() {
     setTodos(updatedTodos);
     localStorage.setItem("todos", JSON.stringify(updatedTodos));
     setTitleInput("");
+    showHideToast("add successfully");
+
   }
   function openDeleteDialog(todo) {
     setDialogTodo(todo);
@@ -94,6 +99,7 @@ export default function TodoList() {
     setTodos(updatedTodos);
     localStorage.setItem("todos", JSON.stringify(updatedTodos));
     setShowDeleteDialog(false);
+    showHideToast("deleted successfully");
   }
   function handleUpdateClose() {
     setShowUpdateDialog(false);
@@ -111,6 +117,7 @@ export default function TodoList() {
     setTodos(updatedTodos);
     setShowUpdateDialog(false);
     localStorage.setItem("todos", JSON.stringify(updatedTodos));
+    showHideToast("updated successfully");
   }
   const todosJsx = todosToBeRendered.map((t) => {
     return <Todo key={t.id} todo={t} showDelete={openDeleteDialog} showUpdate={openUpdateDialog} />;
