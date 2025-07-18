@@ -8,23 +8,15 @@ import CheckIcon from "@mui/icons-material/Check";
 import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 
-import { useContext } from "react";
-import { TodosContext } from "../contexts/todosContext";
+import { useTodosDispatch } from "../contexts/todosContext";
 import {useToast} from "../contexts/ToastContext";
 
 export default function Todo({ todo, showDelete, showUpdate }) {
-  const { todos, setTodos } = useContext(TodosContext);
+  const dispatch = useTodosDispatch();
   const {showHideToast} = useToast();
   // EVENT HANDLERS
   function handleCheckClick() {
-    const updatedTodos = todos.map((t) => {
-      if (t.id == todo.id) {
-        t.isCompleted = !t.isCompleted;
-      }
-      return t;
-    });
-    setTodos(updatedTodos);
-    localStorage.setItem("todos", JSON.stringify(updatedTodos));
+    dispatch({ type: "toggledCompleted", payload: todo });
     showHideToast("edit successfully");
   }
 

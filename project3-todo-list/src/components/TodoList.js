@@ -11,10 +11,9 @@ import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import { useState, useContext, useEffect } from "react";
-import { TodosContext } from "../contexts/todosContext";
+import { useState, useEffect } from "react";
 import { useToast } from "../contexts/ToastContext";
-import { v4 as uuidv4 } from "uuid"; //this to generate id auto
+import { useTodos, useTodosDispatch } from "../contexts/todosContext";
 
 //Components
 import Todo from "./Todo";
@@ -26,7 +25,8 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
 export default function TodoList() {
-  const { todos, setTodos } = useContext(TodosContext);
+  const todos = useTodos();
+	const dispatch = useTodosDispatch();
   const {showHideToast} = useToast();
 
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -55,9 +55,7 @@ export default function TodoList() {
   }
 
   useEffect(() => {
-    console.log("calling use effect");
-    const storageTodos = JSON.parse(localStorage.getItem("todos")) ?? [];
-    setTodos(storageTodos);
+    dispatch({ type: "get" });
   }, []);
 
   //handlers
@@ -66,16 +64,7 @@ export default function TodoList() {
     setDisplayedTodosType(e.target.value);
   }
   function handleAddClick() {
-    const newTodo = {
-      id: uuidv4(),
-      title: titleInput,
-      details: "",
-      isCompleted: false,
-    };
-
-    const updatedTodos = [...todos, newTodo];
-    setTodos(updatedTodos);
-    localStorage.setItem("todos", JSON.stringify(updatedTodos));
+    dispatch({ type: "added", payload: { newTitle: titleInput } });
     setTitleInput("");
     showHideToast("add successfully");
 
@@ -92,12 +81,7 @@ export default function TodoList() {
     setShowDeleteDialog(false);
   }
   function handleDeleteConfirm() {
-    const updatedTodos = todos.filter((t) => {
-      return t.id != dialogTodo.id;
-    });
-
-    setTodos(updatedTodos);
-    localStorage.setItem("todos", JSON.stringify(updatedTodos));
+    dispatch({ type: "deleted", payload: dialogTodo });
     setShowDeleteDialog(false);
     showHideToast("deleted successfully");
   }
@@ -106,17 +90,8 @@ export default function TodoList() {
   }
   
   function handleUpdateConfirm() {
-    const updatedTodos = todos.map((t) => {
-      if (t.id == dialogTodo.id) {
-        return { ...t, title: dialogTodo.title, details: dialogTodo.details };
-      } else {
-        return t;
-      }
-    });
-
-    setTodos(updatedTodos);
+    dispatch({ type: "updated", payload: dialogTodo });
     setShowUpdateDialog(false);
-    localStorage.setItem("todos", JSON.stringify(updatedTodos));
     showHideToast("updated successfully");
   }
   const todosJsx = todosToBeRendered.map((t) => {

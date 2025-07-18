@@ -5,6 +5,7 @@ import { TodosContext } from "./contexts/todosContext";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { v4 as uuidv4 } from "uuid"; //this to generate id auto
 import { ToastProvider } from "./contexts/ToastContext";
+import  TodosProvider  from "./contexts/todosContext";
 const theme = createTheme({
   typography: {
     fontFamily: ["Alexandria"],
@@ -41,22 +42,22 @@ function App() {
   const [todos, setTodos] = useState(initialTodos);
   return (
     <ThemeProvider theme={theme}>
-      <ToastProvider>
-        <div
-          className="App"
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            height: "100vh",
-            background: "#444",
-          }}
-        >
-          <TodosContext.Provider value={{ todos, setTodos }}>
+      <TodosProvider>
+        <ToastProvider>
+          <div
+            className="App"
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "100vh",
+              background: "#444",
+            }}
+          >
             <TodoList />
-          </TodosContext.Provider>
-        </div>
-      </ToastProvider>
+          </div>
+        </ToastProvider>
+      </TodosProvider>
     </ThemeProvider>
   );
 }
