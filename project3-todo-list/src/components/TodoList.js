@@ -11,7 +11,7 @@ import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useToast } from "../contexts/ToastContext";
 import { useTodos, useTodosDispatch } from "../contexts/todosContext";
 
@@ -26,8 +26,8 @@ import DialogTitle from "@mui/material/DialogTitle";
 
 export default function TodoList() {
   const todos = useTodos();
-	const dispatch = useTodosDispatch();
-  const {showHideToast} = useToast();
+  const dispatch = useTodosDispatch();
+  const { showHideToast } = useToast();
 
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showUpdateDialog, setShowUpdateDialog] = useState(false);
@@ -36,13 +36,17 @@ export default function TodoList() {
   const [displayedTodosType, setDisplayedTodosType] = useState("all");
 
   // filtration arrays
-  const completedTodos = todos.filter((t) => {
-    return t.isCompleted;
-  });
+  const completedTodos = useMemo(() => {
+		return todos.filter((t) => {
+			return t.isCompleted;
+		});
+	}, [todos]);
 
-  const notCompletedTodos = todos.filter((t) => {
-    return !t.isCompleted;
-  });
+	const notCompletedTodos = useMemo(() => {
+		return todos.filter((t) => {
+			return !t.isCompleted;
+		});
+	}, [todos]);
 
   let todosToBeRendered = todos;
 
@@ -67,7 +71,6 @@ export default function TodoList() {
     dispatch({ type: "added", payload: { newTitle: titleInput } });
     setTitleInput("");
     showHideToast("add successfully");
-
   }
   function openDeleteDialog(todo) {
     setDialogTodo(todo);
@@ -88,14 +91,21 @@ export default function TodoList() {
   function handleUpdateClose() {
     setShowUpdateDialog(false);
   }
-  
+
   function handleUpdateConfirm() {
     dispatch({ type: "updated", payload: dialogTodo });
     setShowUpdateDialog(false);
     showHideToast("updated successfully");
   }
   const todosJsx = todosToBeRendered.map((t) => {
-    return <Todo key={t.id} todo={t} showDelete={openDeleteDialog} showUpdate={openUpdateDialog} />;
+    return (
+      <Todo
+        key={t.id}
+        todo={t}
+        showDelete={openDeleteDialog}
+        showUpdate={openUpdateDialog}
+      />
+    );
   });
   return (
     <>
